@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/Med-Tracker/static/css/main.51704da2.css",
+    "main.js": "/Med-Tracker/static/js/main.8589505f.js",
+    "static/js/453.6c4b7d49.chunk.js": "/Med-Tracker/static/js/453.6c4b7d49.chunk.js",
+    "index.html": "/Med-Tracker/index.html",
+    "main.51704da2.css.map": "/Med-Tracker/static/css/main.51704da2.css.map",
+    "main.8589505f.js.map": "/Med-Tracker/static/js/main.8589505f.js.map",
+    "453.6c4b7d49.chunk.js.map": "/Med-Tracker/static/js/453.6c4b7d49.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.51704da2.css",
+    "static/js/main.8589505f.js"
+  ]
+}
