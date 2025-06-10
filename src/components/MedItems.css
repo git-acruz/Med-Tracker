@@ -1,0 +1,17 @@
+.medicine-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: #f3f3f3;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.medicine-item.taken {
+  background-color: #d4f4d2;
+}
+
+.medicine-item button {
+  padding: 6px 12px;
+  font-size: 14px;
+}
