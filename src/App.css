@@ -3,16 +3,16 @@
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
+  border: 2px solid black;
 }
 
 h1 {
   text-align: center;
 }
 
-.save-button {
+.save-button, .reset-button {
   padding: 10px 20px;
-  margin: 20px auto;
-  display: block;
+  margin: auto;
   font-size: 16px;
   background-color: #0077cc;
   color: white;
@@ -23,5 +23,16 @@ h1 {
 }
 
 .save-button:hover {
-  background-color: #005fa3;
+  background-color: #005999;
+}
+
+.reset-button:hover {
+  background-color: #7fadce;
+  color: #00008b;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px auto;
 }

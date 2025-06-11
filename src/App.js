@@ -14,9 +14,26 @@ function App() {
 
   const toggleTaken = (index) => {
     const updated = [...medicines];
-    updated[index].taken = !updated[index].taken;
+    const med = updated[index];
+
+    if (!med.taken) {
+      const now = new Date();
+      const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      med.takenTime = time;
+    } else {
+      med.takenTime = ''; // Clear if unchecked
+    }
+
+    med.taken = !med.taken;
     setMedicines(updated);
   };
+
+  //For edit button
+  const editMedicine = (index, name, schedule) => {
+    const updated = [...medicines];
+    updated[index].name = name;
+    updated[index].schedule = schedule;
+  }
 
   //Load on localStorage on app load
   useEffect(() => {
@@ -32,6 +49,15 @@ function App() {
     alert('Medcine list saved!');
   }
 
+  //For reset button
+  const resetMedicines = () => {
+    if (window.confirm("Are you sure you want to delete all medicines?")) {
+      setMedicines([]); // to clear the medicines state
+      localStorage.removeItem("medicines"); // to clear the local storage
+      alert("All items have been deleted!");
+    }
+  }
+
   return (
     <div className='main-container'>
       <h1>Medication Tracker</h1>
@@ -42,10 +68,17 @@ function App() {
       </div>
       {/* Input section for listing medicine */}
       <div className='list-med-container'>
-        <MedicineList medicines={medicines} toggleTaken={toggleTaken} />
+        <MedicineList
+          medicines={medicines}
+          toggleTaken={toggleTaken}
+          editMedicine={editMedicine} />
       </div>
-      {/* Button to save the list */}
+      <div className='button-container'>
+        {/* Button to save the list */}
         <button className='save-button' onClick={saveToLocalStorage}>SAVE</button>
+        {/* Button to delete all */}
+        <button className='reset-button' onClick={resetMedicines}>RESET</button>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,8 @@
+
+
 .medicine-item {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   padding: 10px;
   background: #f3f3f3;
@@ -14,4 +17,11 @@
 .medicine-item button {
   padding: 6px 12px;
   font-size: 14px;
+  margin-left: 10px;
+}
+
+.taken-time {
+  font-size: 0.85em;
+  color: #555;
+  margin-top: 4px;
 }
