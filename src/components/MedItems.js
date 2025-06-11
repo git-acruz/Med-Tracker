@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './MedItems.css';
 
-function MedicineItem({ medicine, onToggle, onEdit }) {
+function MedicineItem({ medicine, onToggle, onEdit, onDelete }) {
     const [editing, setEditing] = useState(false);
     const [newName, setnewName] = useState(medicine.name);
     const [newTime, setnewTime] = useState(medicine.schedule);
@@ -32,7 +32,7 @@ function MedicineItem({ medicine, onToggle, onEdit }) {
             <div>
                 <strong>{medicine.name}</strong> at {medicine.schedule}
                 {medicine.taken && medicine.takenTime && (
-                    <div className='taken-time'>Taken at {medicine.takenTime}</div>
+                    <div className='taken-time'>✅ Taken at {medicine.takenTime}</div>
                 )}
             </div>
             )}
@@ -43,6 +43,9 @@ function MedicineItem({ medicine, onToggle, onEdit }) {
                 </button>
                 <button onClick={handleEdit}>
                     {editing ? 'Save' : 'Edit'}
+                </button>
+                <button onClick={onDelete}
+                    className='delete'>Delete
                 </button>
             </div>
         </div>

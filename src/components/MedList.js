@@ -2,7 +2,7 @@ import React from 'react';
 import MedicineItem from './MedItems';
 import './MedList.css';
 
-function MedicineList({ medicines, toggleTaken, editMedicine }) {
+function MedicineList({ medicines, toggleTaken, editMedicine, deleteMedicine }) {
     return (
         <div className='medicine-list'>
             {medicines.map((med, index) => (
@@ -11,6 +11,7 @@ function MedicineList({ medicines, toggleTaken, editMedicine }) {
                     medicine={med}
                     onToggle={() => toggleTaken(index)}
                     onEdit={(name, schedule) => editMedicine(index, name, schedule)}
+                    onDelete={() => deleteMedicine(index)}
                 />
             ))}
         </div>

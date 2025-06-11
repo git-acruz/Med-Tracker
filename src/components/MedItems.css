@@ -1,5 +1,4 @@
 
-
 .medicine-item {
   display: flex;
   align-items: center;
@@ -15,9 +14,9 @@
 }
 
 .medicine-item button {
-  padding: 6px 12px;
+  padding: 5px 10px;
   font-size: 14px;
-  margin-left: 10px;
+  margin: 5px 2px 5px 10px;
 }
 
 .taken-time {

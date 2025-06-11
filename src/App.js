@@ -35,6 +35,12 @@ function App() {
     updated[index].schedule = schedule;
   }
 
+  //For single delete button
+  const deleteMedicine = (index) => {
+    const updated = medicines.filter((_, i) => i !== index);
+    setMedicines(updated);
+  }
+
   //Load on localStorage on app load
   useEffect(() => {
     const savedMeds = localStorage.getItem('medicines');
@@ -71,7 +77,8 @@ function App() {
         <MedicineList
           medicines={medicines}
           toggleTaken={toggleTaken}
-          editMedicine={editMedicine} />
+          editMedicine={editMedicine}
+          deleteMedicine={deleteMedicine} />
       </div>
       <div className='button-container'>
         {/* Button to save the list */}
