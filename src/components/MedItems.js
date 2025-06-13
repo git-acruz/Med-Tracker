@@ -32,7 +32,7 @@ function MedicineItem({ medicine, onToggle, onEdit, onDelete }) {
             <div>
                 <strong>{medicine.name}</strong> at {medicine.schedule}
                 {medicine.taken && medicine.takenTime && (
-                    <div className='taken-time'>✅ Taken at {medicine.takenTime}</div>
+                    <div className='taken-time'>✅ Taken on {medicine.takenDate} at {medicine.takenTime}</div>
                 )}
             </div>
             )}

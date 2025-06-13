@@ -26,7 +26,6 @@ function MedicineForm({ addMedicine }) {
             />
             <input
                 type="time"
-                placeholder="Schedule"
                 value={schedule}
                 onChange={(e) => setSchedule(e.target.value)}
             />

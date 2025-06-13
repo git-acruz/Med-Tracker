@@ -8,24 +8,34 @@ function App() {
 
   const [medicines, setMedicines] = useState([]);
 
-  const addMedicine = (medicine) => {
+  const addMedicine = (medicine) => { // creates an array consists of name, schedule, taken
     setMedicines([...medicines, medicine]);
   };
 
+  // Not taken / Taken toggle button,
   const toggleTaken = (index) => {
-    const updated = [...medicines];
-    const med = updated[index];
+    const updated = [...medicines]; // updates the medicines array adds takenTime and change on taken status
+    const med = updated[index]; // takes the object of the secific item that's clicked
 
     if (!med.taken) {
       const now = new Date();
-      const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const date = now.toLocaleDateString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric'
+      });
+      const time = now.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      med.takenDate = date;
       med.takenTime = time;
     } else {
       med.takenTime = ''; // Clear if unchecked
     }
 
     med.taken = !med.taken;
-    setMedicines(updated);
+    setMedicines(updated); // updates the set state useState
   };
 
   //For edit button
