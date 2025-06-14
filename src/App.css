@@ -4,10 +4,21 @@
   padding: 20px;
   font-family: Arial, sans-serif;
   border: 2px solid black;
+  background-image: linear-gradient(75deg, white 5%, #d4f4d2 30%, #005757 100%);
 }
 
 h1 {
   text-align: center;
+  padding: 5px 0;
+  /* background-color: navy; */
+}
+
+.today-date {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: navy;
+  padding: 8px 0;
 }
 
 .save-button, .reset-button {

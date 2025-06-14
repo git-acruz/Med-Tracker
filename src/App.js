@@ -8,6 +8,30 @@ function App() {
 
   const [medicines, setMedicines] = useState([]);
 
+  // record date today
+  const [dateToday, setdateToday] = useState(
+    new Date().toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  );
+
+  // to update the date
+  useEffect(() => {
+    const intervalForTimeDisplay = setInterval(() => {
+      const newDate = new Date().toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      setdateToday(newDate);
+    }, 60 * 1000); // every 1 minute
+    return () => clearInterval(intervalForTimeDisplay) // clean up unmount
+  }, []);
+
   const addMedicine = (medicine) => { // creates an array consists of name, schedule, taken
     setMedicines([...medicines, medicine]);
   };
@@ -53,9 +77,9 @@ function App() {
 
   //Load on localStorage on app load
   useEffect(() => {
-    const savedMeds = localStorage.getItem('medicines');
+    const savedMeds = localStorage.getItem('medicines'); // gets the data named 'medicines' upon opening the website
     if (savedMeds) {
-      setMedicines(JSON.parse(savedMeds));
+      setMedicines(JSON.parse(savedMeds)); // update the set State
     }
   }, []);
 
@@ -67,9 +91,9 @@ function App() {
 
   //For reset button
   const resetMedicines = () => {
-    if (window.confirm("Are you sure you want to delete all medicines?")) {
-      setMedicines([]); // to clear the medicines state
-      localStorage.removeItem("medicines"); // to clear the local storage
+    if (window.confirm("Are you sure you want to delete all medicines?")) { // confirmation window
+      setMedicines([]); // clear the medicines state
+      localStorage.removeItem("medicines"); // clear the local storage
       alert("All items have been deleted!");
     }
   }
@@ -78,6 +102,8 @@ function App() {
     <div className='main-container'>
       <h1>Medication Tracker</h1>
 
+      {/* Date today display */}
+      <div className='today-date'>Today is {dateToday}</div>
       {/* Form section for adding new medicine */}
       <div className='new-med-container'>
         <MedicineForm addMedicine={addMedicine} />
