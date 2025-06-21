@@ -1,6 +1,6 @@
 import React from 'react';
 import MedicineItem from './MedItems';
-import './MedList.css';
+import '../components/MedList.css';
 
 function MedicineList({ medicines, toggleTaken, editMedicine, deleteMedicine }) {
     return (
