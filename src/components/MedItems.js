@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './MedItems.css';
+import '../components/MedItems.css';
 
 function MedicineItem({ medicine, onToggle, onEdit, onDelete }) {
     const [editing, setEditing] = useState(false);
