@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import './MedForm.css';
+import '../components/MedForm.css';
 
 function MedicineForm({ addMedicine }) {
     const [name, setName] = useState('')
@@ -26,6 +26,7 @@ function MedicineForm({ addMedicine }) {
             />
             <input
                 type="time"
+                placeholder="Schedule"
                 value={schedule}
                 onChange={(e) => setSchedule(e.target.value)}
             />
