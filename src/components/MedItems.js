@@ -12,6 +12,12 @@ function MedicineItem({ medicine, onToggle, onEdit, onDelete }) {
         }
         setEditing(!editing);
     }
+
+    const scheduleIn12hrFormat = new Date(`2025-01-01T${medicine.schedule}`).toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    });
     
     return (
         <div className={`medicine-item ${medicine.taken ? 'taken' : ''}`}>
@@ -30,10 +36,10 @@ function MedicineItem({ medicine, onToggle, onEdit, onDelete }) {
             </>
             ) : (
             <div>
-                <strong>{medicine.name}</strong> at {medicine.schedule}
-                {medicine.taken && medicine.takenTime && (
+                <strong>{medicine.name}</strong> at <strong>{scheduleIn12hrFormat}</strong>
+                { medicine.taken ?  (
                     <div className='taken-time'>✅ Taken on {medicine.takenDate} at {medicine.takenTime}</div>
-                )}
+                ) : (<></>) }
             </div>
             )}
 
