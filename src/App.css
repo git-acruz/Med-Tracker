@@ -1,4 +1,4 @@
-.main-container {
+.tracker-container {
   max-width: 500px;
   margin: 0 auto;
   padding: 20px;
@@ -7,7 +7,7 @@
   background-image: linear-gradient(75deg, white 5%, #d4f4d2 30%, #005757 100%);
 }
 
-h1 {
+.tracker-container h1 {
   text-align: center;
   padding: 5px 0;
   /* background-color: navy; */
@@ -21,7 +21,7 @@ h1 {
   padding: 8px 0;
 }
 
-.save-button, .reset-button {
+.save-button, .reset-button, .logout-button {
   padding: 10px 20px;
   margin: auto;
   font-size: 16px;
@@ -40,6 +40,11 @@ h1 {
 .reset-button:hover {
   background-color: #7fadce;
   color: #00008b;
+}
+
+.logout-button:hover {
+  background-color: #87cefa;
+  color: #005999;
 }
 
 .button-container {
