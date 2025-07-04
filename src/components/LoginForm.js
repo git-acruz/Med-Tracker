@@ -103,7 +103,7 @@ function LoginForm({ onLoginSuccess }) {
                         <button 
                             type='submit'
                             id='login-btn'
-                            onClick={handleLogIn}
+                            onClick={handleLogIn} // redundant to form element
                             >Login
                         </button>
                     ) : (
@@ -125,7 +125,7 @@ function LoginForm({ onLoginSuccess }) {
                         <button
                             type='submit'
                             id='create-btn'
-                            onClick={handleSignUp}
+                            onClick={handleSignUp} // redundant to form element
                             >Create Account
                         </button>
                     )}
