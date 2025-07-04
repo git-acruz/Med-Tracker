@@ -1,169 +1,150 @@
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
 // const bodyParser = require('body-parser');
+const mongoose = require('mongoose'); // Import mongoose instead of sqlite3
+
+// Mongoose will create it for you if it doesn't exist.
+mongoose.connect('mongodb://localhost:27017/medication_tracker').then(() => {
+  console.log('Successfully connected to MongoDB');
+}).catch(err => {
+  console.error('Connection error', err);
+});
 
 const app = express();
-const db = new sqlite3.Database('.dbsqlite');
 
 app.use(cors());
 // app.use(bodyParser.json());
 app.use(express.json());
 
-//Create tables
-db.run(`
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE,
-        password TEXT
-    )
-`);
 
-db.run(`
-  CREATE TABLE IF NOT EXISTS medications (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        userId INTEGER,
-        name TEXT,
-        schedule TEXT,
-        taken INTEGER,
-        takenDate TEXT,
-        takenTime TEXT,
-        FOREIGN KEY(userId) REFERENCES users(id)
-    )
-`);
+// Create schema mongodb
+const bcrypt = require('bcrypt'); // import bcrypt
 
-// sign up route
-app.post('/signup', (req, res) => { // create the route for POST requests to /signup
-    const { username, password } = req.body; // data from front end
-
-    const query = 'INSERT INTO users (username, password) VALUES (?, ?)'; //SQL query to insert new data to users(id)
-    db.run(query, [username, password], function (err) { // executes the sql using sqlite
-        if (err) {
-            return res.status(400).json({ error: 'Username already exists' }); 
-        }
-        res.json({ message: 'Sign up successful', userId: this.lastID }); // error message if error, success messafe if not error
-    });
+const UserSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
 });
 
-// login route POST
-app.post('/login', (req, res) => { // route for POST requests to /login
-    const { username, password } = req.body; // data from frontend
-
-    const query = 'SELECT id FROM users WHERE username = ? AND password = ?'; //SQL query to select matching data
-    db.get(query, [username, password], (err, row) => { // use the username and password and pass the input values to query ? also use db.get to get 1 row only
-        if (err || !row) {
-            return res.status(401).json({ error: 'Invalid credentials' });
-        } 
-        res.json({ message: 'Login successful', userId: row.id }); // error if the user/password not matched, success message if matched
-    });
-});
-
-// for saving medication list (POST)
-app.post('/medications/all', (req, res) => {
-    console.log('/medications body @ save:', req.body);
-    const { medicinesWithUserId } = req.body;
-    const userId = medicinesWithUserId.length > 0 ? medicinesWithUserId[0].userId : null;
-    
-    if (!userId) {
-        return res.status(400).json({ error: 'User ID is missing' });
-    };
-    
-    // to make the delete and insert data more safe we do a transaction.
-    db.serialize(() => {
-        db.run('BEGIN TRANSACTION');
-        // Step 1: Delete old medications for this user
-        const deleteQuery = 'DELETE FROM medications WHERE userId = ?';
-        db.run(deleteQuery, [userId], function(err) {
-            if (err) {
-                return res.status(500).json({ error: 'Failed to delete data' });
-            }
-
-            const insertQuery = `
-                INSERT INTO medications (userId, name, schedule, taken, takenDate, takenTime)
-                VALUES (?, ?, ?, ?, ?, ?)`;
-
-            const prepStmt = db.prepare(insertQuery); // sql statement
-            // This prepares an SQL query in advance so you can reuse it efficiently multiple times with different values.
-
-            for (const medicinesDataToDb of medicinesWithUserId) {
-                prepStmt.run([
-                    medicinesDataToDb.userId,
-                    medicinesDataToDb.name,
-                    medicinesDataToDb.schedule,
-                    medicinesDataToDb.taken ? 1 : 0,
-                    medicinesDataToDb.takenDate,
-                    medicinesDataToDb.takenTime
-                ]);
-            }
-
-            prepStmt.finalize(err => {
-                if (err) {
-                    console.error('Error:', err.message);
-                    db.run('ROLLBACK'); // Rollback on error
-                    return res.status(500).json({ error: 'Failed to save medications' });
-                }
-                // If all good, commit the transaction
-                db.run('COMMIT');
-                res.json({ message: 'Medication list saved'})
-            });
-        });
-    });
-    
-        // db.run(query, [userId, name, schedule, taken ? 1 : 0, takenDate, takenTime], function (err) {
-    //     if (err) {
-    //         console.error('INSERT ERROR:', err.message);
-    //         return res.status(500).json({ error: 'Failed to save medications' });
-    //     }
-    //     res.json({ message: 'Medication list saved', id: this.lastID });
-    // }); * testing something different
-
-    /* userId, name, schedule, taken, takenTime - from front end
-        INSERT INTO medications - to save data into medications table
-        db.run para mag execute ng INSERT query
-        read taken as true or false, hence 1 or 0
-     */
-});
-
-// load medication list (GET)
-app.get('/medications', (req, res) => {
-    
-    const { userId } = req.query;
-    
-    const query = 'SELECT * FROM medications WHERE userId = ?';
-    db.all(query, [userId], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: 'Failed to fetch medications' });
-        }
-        res.json(rows); // error if failed to load, load rows
-        console.log('.medications body @ load:', rows)
-    });
-    /* app.get() - para kuhanin ang lahat ng data ng isang user,
-        { userId } = req.query to determine who the user is.
-        SELECT * FROM medications WHERE userId = ? = to look into the medications table with the specific userId
-        db.all() ginagamit para kuhanin ang lahat ng rows na match sa query.
-        res.json(rows) - to respond an object of arrays containing the all the rows on medications table (userId, name, schedule, taken, takenDate, takenTime)
-    */
-});
-
-// delete medication list (DELETE)
-app.delete('/medications/all', (req, res) => {
-  const { userId } = req.query;
-
-  const query = 'DELETE FROM medications WHERE userId = ?';
-  db.run(query, [userId], function (err) {
-    if (err) {
-      return res.status(500).json({ error: 'Failed to delete medication' });
+// This is a pre-save "hook" that automatically hashes the password before saving a new user
+// This is a massive security improvement over storing plain text passwords.
+UserSchema.pre('save', async function(next) {
+    if (this.isModified('password') || this.isNew) {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
     }
-    res.json({ message: 'Medication deleted', changes: this.changes });
-  });
-
-  console.log(req.query)
-  /* app.delete() - defines delete route
-    all | { userId } = req.query - get all query from medications of a userId
-    db.run('DELETE FROM medications WHERE userId = ?', [userId], - executes sql query to delete data with the specific userId
-    ? is placeholder, [userId] is the value for the ? */
+    next();
 });
 
+const User = mongoose.model('User', UserSchema);
+
+const MedicationSchema = new mongoose.Schema({
+    // link to the user model using its ObjectID
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    name: { type: String, required: true },
+    schedule: { type: String, required: true },
+    taken: { type: Boolean, default: false },
+    takenDate: { type: String },
+    takenTime: { type: String }
+});
+
+const Medication = mongoose.model('Medication', MedicationSchema);
+
+
+// sign up route mongodb
+app.post('/signup', async (req, res) => {
+
+    try {
+        const { username, password } = req.body;
+
+        const newUser = new User({ username, password });
+        
+        const savedUser = await newUser.save();
+
+        res.json({ message: 'Sign up successful', userId: savedUser._id }); // In MongoDB, the primary key is automatically named _id
+    } catch (err) {
+        res.status(400).json({ error: 'Username already exists or server error.' })
+    }
+});
+
+
+// login route mongodb
+app.post('/login', async (req, res) => {
+    
+    try {
+        const { username, password } = req.body;
+
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid Credentials' });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        res.json({ message: 'Login successful', userId: user._id });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' })
+    }
+});
+
+
+// save medication route (POST) mongodb
+app.post('/medications/all', async (req, res) => {
+    console.log('/medications body @ save:', req.body)
+
+    try {
+        const { medicinesWithUserId } = req.body;
+
+        // Extract the userId. MongoDB IDs need to be handled as ObjectId types.
+        const userId = medicinesWithUserId.length > 0 ? medicinesWithUserId[0].userId : null;
+        if (!userId) {
+            return res.status(400).json({ error: 'User ID is missing' });
+        }
+        
+        await Medication.deleteMany({ userId: userId });
+
+        const verifiedMeds = medicinesWithUserId.map(med => ({
+            ...med,
+            taken: Boolean(med.taken) // convert 0/1 to T/F to ensure taken is boolean
+        }));
+
+        await Medication.insertMany(verifiedMeds);
+
+        res.json({ message: 'Medication(s) saved successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to save medications' });
+    }
+});
+
+
+// load medication list (GET) mongodb
+app.get('/medications', async (req, res) => {
+
+    try {
+        const { userId } = req.query;
+
+        const loadmeds = await Medication.find({ userId: userId }); 
+        res.json(loadmeds);
+    } catch (err) {
+        res.status(500).json({ error: 'Load failed' });
+    }
+});
+
+
+// delete medication list (DELETE) mongodb
+app.delete('/medications/all', async (req, res) => {
+    
+    try {
+        const { userId } = req.query;
+
+        const result = await Medication.deleteMany({ userId: userId });
+        res.json({ message: 'All medications deleted', changes: result.deletedCount });
+    } catch (err) {
+        res.status(500).json({ error: 'Delete failed' });
+    }
+});
 
 // declare PORT and listen
 const PORT = 5000;
