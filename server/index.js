@@ -16,8 +16,8 @@ const app = express();
 
 app.use(cors({
     origin: [
-        'https://git-acruz.github.io/Med-Tracker/',
-        'https://med-tracker-nu.vercel.app/'
+        'https://med-tracker-nu.vercel.app/',
+        'https://git-acruz.github.io/Med-Tracker/'
     ]
 }));
 // app.use(bodyParser.json());
