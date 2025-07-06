@@ -6,7 +6,7 @@ const cors = require('cors');
 const mongoose = require('mongoose'); // Import mongoose instead of sqlite3
 
 // Mongoose will create it for you if it doesn't exist.
-mongoose.connect('mongodb://localhost:27017/medication_tracker').then(() => {
+mongoose.connect(process.env.MONGO_URI).then(() => {
   console.log('Successfully connected to MongoDB');
 }).catch(err => {
   console.error('Connection error', err);
@@ -14,7 +14,9 @@ mongoose.connect('mongodb://localhost:27017/medication_tracker').then(() => {
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: 'https://git-acruz.github.io/Med-Tracker/'
+}));
 // app.use(bodyParser.json());
 app.use(express.json());
 
@@ -151,5 +153,5 @@ app.delete('/medications/all', async (req, res) => {
 // declare PORT and listen
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
