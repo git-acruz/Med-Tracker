@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 // const bodyParser = require('body-parser');
-const mongoose = require('mongoose'); // Import mongoose instead of sqlite3
+const mongoose = require('mongoose'); // Import mongoose
 
 // Mongoose will create it for you if it doesn't exist.
 mongoose.connect(process.env.MONGO_URI).then(() => {
@@ -15,7 +15,10 @@ mongoose.connect(process.env.MONGO_URI).then(() => {
 const app = express();
 
 app.use(cors({
-    origin: 'https://git-acruz.github.io/Med-Tracker/'
+    origin: [
+        'https://git-acruz.github.io/Med-Tracker/',
+        'https://med-tracker-nu.vercel.app/'
+    ]
 }));
 // app.use(bodyParser.json());
 app.use(express.json());

@@ -82,7 +82,7 @@ function TrackerPage({ userId, onLogout}) {
     //For reset button
     const resetMedicines = () => {
         if (window.confirm("Are you sure you want to delete all medicines?")) {
-            fetch(`http://localhost:5000/medications/all?userId=${userId}`, {
+            fetch(`${API_BASE}/medications/all?userId=${userId}`, {
                 method: 'DELETE', // DELETE means delete
             })
             .then(res => {
