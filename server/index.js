@@ -16,8 +16,8 @@ const app = express();
 
 app.use(cors({
     origin: [
-        'https://med-tracker-front.vercel.app/',
-        'https://git-acruz.github.io/Med-Tracker/', // just in case
+        'https://med-tracker-front.vercel.app',
+        'https://git-acruz.github.io/Med-Tracker', // just in case
         'http://localhost:3000' // just in case
     ]
 }));
