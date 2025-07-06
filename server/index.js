@@ -13,7 +13,12 @@ mongoose.connect(process.env.MONGO_URI).then(() => {
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: ['https://med-tracker-front.vercel.app/',
+            'http://localhost:3000'
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
 
 app.use(express.json());
 
