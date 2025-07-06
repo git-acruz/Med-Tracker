@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MedicineForm from '../components/MedForm';
 import MedicineList from '../components/MedList';
+import API_BASE from "../api";
 import '../App.css';
 
 // This component receives the logged-in user's ID and a logout function as props
@@ -38,7 +39,7 @@ function TrackerPage({ userId, onLogout}) {
             return; // do nothing if logged out
         }
     
-        fetch(`http://localhost:5000/medications?userId=${userId}`, {
+        fetch(`${API_BASE}/medications?userId=${userId}`, {
           method: 'GET' // GET means getting data
         })
           .then(res => res.json())
@@ -63,7 +64,7 @@ function TrackerPage({ userId, onLogout}) {
         const medicinesWithUserId = medicines.map(medicinesDataToDb => ({ userId, ...medicinesDataToDb }));
         console.log(medicinesWithUserId)
 
-        fetch('http://localhost:5000/medications/all', {
+        fetch(`${API_BASE}/medications/all`, {
             method: 'POST', // POST means inserting data
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ medicinesWithUserId })

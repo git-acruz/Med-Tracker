@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../components/loginform.css';
+import API_BASE from '../api';
 
 function LoginForm({ onLoginSuccess }) {
     const [username, setUsername] = useState('');
@@ -9,7 +10,7 @@ function LoginForm({ onLoginSuccess }) {
     const [confirm, setConfirm] = useState('');
     
     const handleApiCall = (endpoint, body) => {
-        fetch(`http://localhost:5000/${endpoint}`, {
+        fetch(`${API_BASE}/${endpoint}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
