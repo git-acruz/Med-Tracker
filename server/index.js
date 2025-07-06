@@ -15,7 +15,7 @@ const app = express();
 
 app.use(cors({
     origin: [
-        'https://med-tracker-front.vercel.app',
+        'https://med-tracker-front-hhnu7699t-alvins-projects-5a11ca9c.vercel.app',
         'http://localhost:3000' // just in case
     ]
 }));
